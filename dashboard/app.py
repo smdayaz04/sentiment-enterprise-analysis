@@ -31,8 +31,8 @@ st.markdown("""
 
 @st.cache_data
 def load_massive_data():
-    # Loading full 1.6M rows into memory cache for speed
-    df = data_loader.load_data(n=None)
+    # This must call the function from data_loader, NOT a local path
+    df = data_loader.load_data(n=None) 
     return df
 
 # Initialize Data
