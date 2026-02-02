@@ -7,7 +7,6 @@ SAVE_PATH = ROOT / "outputs"
 
 os.makedirs(SAVE_PATH, exist_ok=True)
 
-# Remove the RAW_FILE line and add this URL instead
 DATA_URL = "https://raw.githubusercontent.com/kaz-Anova/Sentiment140/master/training.1600000.processed.noemoticon.csv"
 
 LIMITS = {'pos': 0.05, 'neg': -0.05}
