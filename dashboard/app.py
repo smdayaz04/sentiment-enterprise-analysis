@@ -33,9 +33,12 @@ st.markdown("""
 
 @st.cache_data
 def load_massive_data():
-    # Force n=50000 to ensure the server doesn't time out
-    df = data_loader.load_data(n=50000) 
+    # Increase n to 160,000 for better hit rates
+    df = data_loader.load_data(n=160000) 
     return df
+
+# ... inside the sidebar section ...
+vol = st.sidebar.slider("Analysis Depth (Rows)", 10000, 160000, 100000)
 
 # Initialize Data
 df_full = load_massive_data()

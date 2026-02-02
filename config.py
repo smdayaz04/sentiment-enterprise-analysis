@@ -14,8 +14,8 @@ LIMITS = {'pos': 0.05, 'neg': -0.05}
 NEG_LIMIT = 40 
 
 BRAND_KEYWORDS = {
-    'Airlines': ['flight', 'airline', 'delay', 'cancel', 'airport'],
-    'Tech': ['iphone', 'battery', 'update', 'bug', 'crash', 'software'],
-    'Finance': ['bank', 'credit', 'loan', 'fee', 'account', 'interest'],
-    'Food': ['restaurant', 'food', 'service', 'taste', 'order']
+    'Airlines': ['flight', 'airline', 'delay', 'cancel', 'airport', 'plane', 'travel'],
+    'Tech': ['iphone', 'google', 'apple', 'microsoft', 'phone', 'computer', 'software', 'bug'],
+    'Finance': ['bank', 'money', 'cash', 'credit', 'loan', 'pay', 'account', 'rich'],
+    'Food': ['food', 'eat', 'dinner', 'restaurant', 'pizza', 'taste', 'burger', 'lunch']
 }
