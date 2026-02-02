@@ -13,6 +13,7 @@ import data_loader
 import text_cleaner
 import sentiment_analyzer
 
+# Dashboard Configuration
 st.set_page_config(page_title="Enterprise Reputation Intelligence", layout="wide")
 
 # Pro-Level Dark Theme CSS
@@ -32,7 +33,7 @@ st.markdown("""
 
 @st.cache_data
 def load_massive_data():
-    # Calling the protected data loader
+    """Triggers the protected data loader with specific columns"""
     df = data_loader.load_data(n=100000) 
     return df
 
@@ -44,20 +45,23 @@ df_full = load_massive_data()
 # ==========================================
 st.sidebar.title("📊 Enterprise Filters")
 
+# Sector Selection from Config
 sector = st.sidebar.selectbox("Market Sector", list(config.BRAND_KEYWORDS.keys()))
 keywords = config.BRAND_KEYWORDS[sector]
 
+# Volume Slider for performance control
 vol = st.sidebar.slider("Analysis Depth (Rows)", 1000, 100000, 20000)
 
 # ==========================================
-# DATA PIPELINE (With Safety Checks)
+# DATA PIPELINE (With Key Check)
 # ==========================================
-if not df_full.empty:
+# Check if data exists and has the required 'date' column
+if not df_full.empty and 'date' in df_full.columns:
     # 1. Safe Sampling
     sample_size = min(len(df_full), vol)
     data_sample = df_full.sample(sample_size).copy()
     
-    # 2. Date Processing
+    # 2. Date Processing (Fixes KeyError)
     data_sample['timestamp'] = pd.to_datetime(data_sample['date'].str.replace(' PDT ', ' '), errors='coerce')
     data_sample = data_sample.dropna(subset=['timestamp'])
     
@@ -67,19 +71,20 @@ if not df_full.empty:
     end_date_limit = data_sample['timestamp'].max().date()
     selected_dates = st.sidebar.date_input("Analysis Window", [start_date_limit, end_date_limit])
     
-    # 3. Apply Filters
-    mask = data_sample['text'].str.contains('|'.join(keywords), case=False)
+    # 3. Apply Sector Keyword Filtering
+    mask = data_sample['text'].str.contains('|'.join(keywords), case=False, na=False)
     filtered_df = data_sample[mask]
     
-    # Run heavy processing
+    # Run heavy NLP processing
     if not filtered_df.empty:
         filtered_df = text_cleaner.process_batch(filtered_df)
         final_df = sentiment_analyzer.analyze_sentiment(filtered_df)
     else:
         final_df = pd.DataFrame()
 else:
-    st.error("Data source unavailable. Please check the connection.")
-    final_df = pd.DataFrame()
+    # Stop the app gracefully if columns are missing
+    st.error("Dataset Error: The required 'date' or 'text' columns were not found.")
+    st.stop()
 
 # ==========================================
 # DASHBOARD UI
@@ -104,7 +109,7 @@ if not final_df.empty:
 
     st.divider()
 
-    # Visuals
+    # Advanced Visuals Row
     col_left, col_right = st.columns([1, 1.5])
     with col_left:
         st.subheader("Sentiment Distribution")
@@ -129,11 +134,12 @@ if not final_df.empty:
         fig_trend.update_layout(template='plotly_dark', margin=dict(t=0, b=0, l=0, r=0), height=300)
         st.plotly_chart(fig_trend, use_container_width=True)
 
-    # Drill-Down
+    # Data Drill-Down
     st.subheader("🔍 High-Risk Samples")
     st.dataframe(final_df[final_df['vader_label'] == 'negative'][['timestamp', 'text', 'vader_score']].head(50), use_container_width=True)
 
+    # Risk Alert Logic
     if neg_pct > config.NEG_LIMIT:
-        st.warning(f"⚠️ SYSTEM ALERT: Negative sentiment for {sector} has exceeded threshold.")
+        st.warning(f"⚠️ SYSTEM ALERT: Negative sentiment for {sector} has exceeded the {config.NEG_LIMIT}% risk threshold.")
 else:
-    st.info("Adjust filters or volume to see analysis for this sector.")
+    st.info(f"No mentions of {sector} keywords found in this sample. Increase Analysis Depth or change filters.")
