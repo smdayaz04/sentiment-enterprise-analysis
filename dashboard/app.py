@@ -33,8 +33,8 @@ st.markdown("""
 
 @st.cache_data
 def load_massive_data():
-    """Triggers the protected data loader with specific columns"""
-    df = data_loader.load_data(n=100000) 
+    # Force n=50000 to ensure the server doesn't time out
+    df = data_loader.load_data(n=50000) 
     return df
 
 # Initialize Data
