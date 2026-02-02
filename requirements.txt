@@ -1,0 +1,24 @@
+# Core Data Processing (compatible versions)
+pandas>=2.0.0
+numpy>=1.24.0
+
+# NLP & Sentiment Analysis
+nltk
+vaderSentiment
+textblob
+
+# Visualization
+matplotlib
+seaborn
+plotly
+wordcloud
+
+# Dashboard
+streamlit
+
+# Data Storage
+sqlalchemy
+
+# Utilities
+python-dotenv
+requests
