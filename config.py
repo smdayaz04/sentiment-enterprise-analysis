@@ -7,8 +7,8 @@ SAVE_PATH = ROOT / "outputs"
 
 os.makedirs(SAVE_PATH, exist_ok=True)
 
-RAW_FILE = DATA_PATH / "sentiment140.csv"
-CLEAN_FILE = DATA_PATH / "cleaned_data.csv"
+# Remove the RAW_FILE line and add this URL instead
+DATA_URL = "https://raw.githubusercontent.com/kaz-Anova/Sentiment140/master/training.1600000.processed.noemoticon.csv"
 
 LIMITS = {'pos': 0.05, 'neg': -0.05}
 NEG_LIMIT = 40 
@@ -19,5 +19,3 @@ BRAND_KEYWORDS = {
     'Finance': ['bank', 'credit', 'loan', 'fee', 'account', 'interest'],
     'Food': ['restaurant', 'food', 'service', 'taste', 'order']
 }
-
-SAMPLE_SIZE = None
